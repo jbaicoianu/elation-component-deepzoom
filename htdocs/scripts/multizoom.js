@@ -95,8 +95,14 @@ elation.extend("zoom", {
         this.controls['zoom'].style.bottom = '5px';
         this.controls['zoom'].style.right = '5px';
   
-        this.buttons['zoom_out'] = new elation.ui.button({label: '&#8211;', title: 'Zoom Out', events: { click: this, touchstart: this, mousedown: this }}, this.controls['zoom']);
-        this.buttons['zoom_in'] = new elation.ui.button({label: '+', title: 'Zoom In', events: { click: this, touchstart: this, mousedown: this }}, this.controls['zoom']);
+
+        var buttons = [elation.html.create({'tag':'button'}), elation.html.create({'tag':'button'})];
+/*
+        this.buttons['zoom_out'] = elation.ui.button("deepzoom_zoom_out", buttons[0], {label: '&#8211;', title: 'Zoom Out', events: { click: this, touchstart: this, mousedown: this }}, this.controls['zoom']);
+        this.buttons['zoom_in'] = elation.ui.button("deepzoom_zoom_in", buttons[1], {label: '+', title: 'Zoom In', events: { click: this, touchstart: this, mousedown: this }}, this.controls['zoom']);
+        this.controls['zoom'].appendChild(buttons[0]);
+        this.controls['zoom'].appendChild(buttons[1]);
+*/
   
         // FIXME - ugly.
         this.container.appendChild(this.controls['zoom']);
@@ -106,16 +112,16 @@ elation.extend("zoom", {
       switch(ev.type) {
         case 'mousedown':
         case 'touchstart':
-          if (ev.target == this.buttons['zoom_in'].element || ev.target == this.buttons['zoom_out'].element) {
+          if (ev.target == this.buttons['zoom_in'].container || ev.target == this.buttons['zoom_out'].container) {
             ev.preventDefault();
             ev.stopPropagation();
           }
           break;
         case 'click':
-          if (ev.target == this.buttons['zoom_in'].element) {
+          if (ev.target == this.buttons['zoom_in'].container) {
               this.scaler.zoomBy(10/8);
             this.bestLevel(true);
-          } else if (ev.target == this.buttons['zoom_out'].element) {
+          } else if (ev.target == this.buttons['zoom_out'].container) {
               this.scaler.zoomBy(8/10);
             this.bestLevel(true);
           }
@@ -436,7 +442,7 @@ function MultiZoomTileRow(container, options) {
       'column': tile,
       'level': this.options.level,
       'collection': 0,
-      'random': Math.ceil(Math.random() * 5)
+      'random': ((1 + this.options.row) * (1 + tile) * (1 + this.options.level)) % 5 // Pick a "random" server based on what tile number this is
     };
     var ret = this.options.url;
     for (var k in replace) {
