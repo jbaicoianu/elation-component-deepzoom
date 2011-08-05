@@ -1,5 +1,5 @@
-{dependency type="component" name=deepzoom.imagescale"}
-{dependency type="component" name=deepzoom.multizoom"}
+{dependency type="component" name="deepzoom.imagescale"}
+{dependency type="component" name="deepzoom.multizoom"}
 
 <div id="multizoom">
 </div>
