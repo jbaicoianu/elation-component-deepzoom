@@ -36,7 +36,8 @@ class Component_deepzoom extends Component {
         }
       }
       if (file_exists($response["xmlpath"])) {
-        $defaultdomain = "{random}.tiles.supcrit.net/elation";
+        //$defaultdomain = "{random}.tiles.supcrit.net/elation";
+        $defaultdomain = "www.supcrit.com";
         //$defaultdomain = "localhost";
         $img = new SimpleXMLElement(file_get_contents($response["xmlpath"]));
         if (!empty($img)) {
