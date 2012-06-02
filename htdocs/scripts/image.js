@@ -3,6 +3,7 @@ elation.extend("deepzoom.image", function(src) {
   this.tilesrc = '';
   this.levelinfo = [];
   this.tilecache = {};
+  this.size = [0, 0];
 
   this.init = function() {
     elation.events.add([this], "deepzoom_image_descriptorload", this);
@@ -27,15 +28,15 @@ elation.extend("deepzoom.image", function(src) {
       var img = ev.data.Image;
       this.tilesrc = this.src.replace(/\.xml$/, '_files');
       this.format = img.Format;
-      this.overlap = img.Overlap;
-      this.tilesize = img.TileSize;
+      this.overlap = parseInt(img.Overlap);
+      this.tilesize = parseInt(img.TileSize);
 
       if (img._children && img._children.Size) {
-        this.size = [img._children.Size.Width, img._children.Size.Height];
+        this.size = [parseInt(img._children.Size.Width), parseInt(img._children.Size.Height)];
       }
       this.loaded = true;
       this.getMaximumLevel();
-      elation.events.fire({type: "deepzoom_image_load", element: this, fn: this});
+      elation.events.fire({type: "deepzoom_image_load", element: this, fn: this, data: this.offset});
       console.log("Loaded DeepZoom descriptor", this.src, ev.data);
     } else {
       console.log("Received an unknown XML format for DeepZoom descriptor", this.src, ev.data);
@@ -64,6 +65,9 @@ elation.extend("deepzoom.image", function(src) {
   }
   this.getVisibleTiles = function(pos, viewport, level, adjustoverflow) {
     var levelinfo = this.getLevelInfo(level);
+    if (!levelinfo) {
+      return {offset: [0, 0], tl: [0, 0], br: [0, 0]};
+    }
     var levelpos = [pos[0] * levelinfo.width, pos[1] * levelinfo.height];
     var halfviewport = [viewport[0] / 2, viewport[1] / 2];
     var tl = [levelpos[0] - halfviewport[0], levelpos[1] - halfviewport[1]];
@@ -90,13 +94,16 @@ elation.extend("deepzoom.image", function(src) {
       tl: [Math.floor(tl[0] / this.tilesize), Math.floor(tl[1] / this.tilesize)],
       br: [Math.floor(br[0] / this.tilesize), Math.floor(br[1] / this.tilesize)]
     };
+    //console.log(tl, br, tilerange, levelinfo);
 
 
-    //var scaledpos = [levelinfo.columns * (pos[0] / this.size[0]), levelinfo.rows * (pos[1] / this.size[1])];
     var scaledpos = [levelpos[0] / this.tilesize, levelpos[1] / this.tilesize];
     var currtile = [Math.floor(scaledpos[0]), Math.floor(scaledpos[1])];
-    tilerange.offset = [(scaledpos[0] - tilerange.tl[0] - .5) / 2, (scaledpos[1] - tilerange.tl[1] - .5) / 2];
-    //tilerange.offset = [0,0];
+    tilerange.offset = [
+      (scaledpos[0] - tilerange.tl[0] - halfviewport[0] / this.tilesize) / (viewport[0] / this.tilesize),
+      (scaledpos[1] - tilerange.tl[1] - halfviewport[1] / this.tilesize) / (viewport[1] / this.tilesize)
+    ];
+
     return tilerange;
   }
   this.getTileURL = function(level, row, col) {
