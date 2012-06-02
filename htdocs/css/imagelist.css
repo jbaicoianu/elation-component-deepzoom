@@ -1,0 +1,13 @@
+.multizoom_controls {
+  float: left;
+  position: fixed;
+  background: white;
+  border: 2px solid black;
+  padding: .5em;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  opacity: .75;
+  z-index: 5000;
+  
+}
+
