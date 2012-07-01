@@ -1,6 +1,6 @@
 elation.extend("deepzoom.image", function(src) {
   this.src = src;
-  this.tilesrc = '';
+  this.tilepath = '';
   this.levelinfo = [];
   this.tilecache = {};
   this.size = [0, 0];
@@ -26,7 +26,7 @@ elation.extend("deepzoom.image", function(src) {
   this.deepzoom_image_descriptorload = function(ev) {
     if (ev.data && ev.data.Image) {
       var img = ev.data.Image;
-      this.tilesrc = this.src.replace(/\.xml$/, '_files');
+      this.tilepath = this.src.replace(/\.xml$/, '_files');
       this.format = img.Format;
       this.overlap = parseInt(img.Overlap);
       this.tilesize = parseInt(img.TileSize);
@@ -36,8 +36,8 @@ elation.extend("deepzoom.image", function(src) {
       }
       this.loaded = true;
       this.getMaximumLevel();
-      elation.events.fire({type: "deepzoom_image_load", element: this, fn: this, data: this.offset});
       console.log("Loaded DeepZoom descriptor", this.src, ev.data);
+      elation.events.fire({type: "deepzoom_image_load", element: this, fn: this, data: this.offset});
     } else {
       console.log("Received an unknown XML format for DeepZoom descriptor", this.src, ev.data);
     }
@@ -107,10 +107,21 @@ elation.extend("deepzoom.image", function(src) {
     return tilerange;
   }
   this.getTileURL = function(level, row, col) {
-    return this.tilesrc + '/' + level + '/' + col + '_' + row + '.' + this.format;
+    return this.tilepath + '/' + level + '/' + col + '_' + row + '.' + this.format;
+  }
+  this.getTileURLs = function(level, tl, br) {
+    var urls = [];
+    for (var y = tl[1]; y <= br[1]; y++) {
+      var row = [];
+      for (var x = tl[0]; x <= br[0]; x++) {
+        row.push(this.getTileURL(level, y, x));
+      }
+      urls.push(row);
+    }
+    return urls;
   }
   this.getTileImage = function(level, row, col, callback) {
-    var tileid = [this.tilesrc, level, row, col].join('.');
+    var tileid = [this.tilepath, level, row, col].join('.');
     var tile = elation.utils.arrayget(this.tilecache, tileid, false);
     if (!tile) {
       tile = new Image();
