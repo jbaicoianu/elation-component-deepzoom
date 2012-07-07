@@ -1,0 +1,51 @@
+Elation DeepZoom Image Library
+==============================
+
+
+DeepZoom images are created from massive source images by breaking them into tiles of a fixed size.  First, we figure out the max level for a given image, using the following formula:
+
+maxlevel = Math.ceil(Math.log(Math.max(this.size[0], this.size[1])) / Math.LN2)
+
+Then the source image is broken up into tiles for each detail level.  The max size of each level is 2ⁿ x 2ⁿ pixels.  
+
+
+This library will figure out which tiles are needed to view a specific position of the image at any given scale, and compose them into tile layers.  These tile layers are then overlaid with different offsets to allow for seamlessly zooming from a tiny thumbnail all the way to the max resolution of the image.
+
+
+Tile layers:
+
+             viewport.x * bufferfactor
+    ╭───────────────────┴───────────────────╮
+    ┌─────────┬──┰──────┬─────────┬─────────┐ ╮
+    │         │  ╻ offset.y       │         │ │
+    │         │  ╻      │         │         │ │
+    │   0─0   │  ╻1─0   │   2─0   │   3─0   │ │
+    │╸╸offset.x╸╸╔═╤══════════════════╗     │ │
+    ├─────────┼──║ │                  ║─────┤ │
+    │         │  ║ │                  ║     │ │
+    │         │  ║ │                  ║     │ │
+    │   0─1   │  ║ │                  ║-1   │ │
+    │         │  ║ viewport.y         ║     │ │
+    ├─────────┼──║ │                  ║─────┤ ├╴ viewport.y * bufferfactor
+    │         │  ║ │                  ║     │ │
+    │         │  ║ │                  ║     │ │
+    │   0─2   │  ╟─┼──viewport.x──────╢-2   │ │
+    │         │  ╚═╧══════════════════╝     │ │
+    ├─────────┼─────────┼─────────┼─────────┤ │
+    │         │         │         │         │ │
+    │         │         │         │         │ │
+    │   0─3   │   1─3   │   2─3   │   3─3   │ │
+    │         │         │         │         │ │
+    └─────────┴─────────┴─────────┴─────────┘ ╯
+
+
+                      _________      
+                 ____╱        ╱_____ 
+            ____╱   ╱        ╱     ╱_____
+           ╱   ╱   ╱________╱     ╱     ╱
+          ╱   ╱                  ╱     ╱
+         ╱   ╱__________________╱     ╱
+        ╱                            ╱
+       ╱____________________________╱
+
+
