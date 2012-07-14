@@ -19,6 +19,7 @@ class Component_deepzoom extends Component {
         $response["fileext"] = $pinfo["extension"];
         $response["filename"] = $response["imgname"] . "." . $response["fileext"];
         $response["filepath"] = $this->imagedir . "/originals/" . $response["filename"];
+        $response["tilesize"] = any($args["tilesize"], 256);
         if (!file_exists($response["filepath"])) {
           print "Downloading file...";
           flush();
@@ -31,7 +32,7 @@ class Component_deepzoom extends Component {
 
         
         if (!file_exists($response["xmlpath"])) {
-          $converter = new Oz_Deepzoom_ImageCreator(256, 1, any($args["outputext"], $response["fileext"]));
+          $converter = new Oz_Deepzoom_ImageCreator($response["tilesize"], 1, any($args["outputext"], $response["fileext"]));
           $converter->create( realpath($response["filepath"]), $this->imagedir . '/' . $response["imgname"] . '.xml', true);
         }
       }
