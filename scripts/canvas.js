@@ -385,6 +385,7 @@ elation.component.add("deepzoom.viewer.canvas", function() {
   //this.position = [.7415, .3460];
   this.position = [.5, .5];
   this.debug = false;
+  console.log("AAAA");
 
   this.init = function() {
     elation.html.addclass(this.container, "deepzoom_viewer_canvas");
@@ -444,11 +445,13 @@ elation.component.add("deepzoom.viewer.canvas", function() {
     //console.log('move', this.zoomfactor);
     var pos = [ev.clientX, ev.clientY];
     var diff = [this.lastpos[0] - pos[0], this.lastpos[1] - pos[1]];
-console.log(this.zoomfactor, this.deepzoom.size, this.deepzoom.viewport, this.deepzoom);
+console.log(this.zoomfactor, this.deepzoom.size, this.deepzoom.viewport, this.deepzoom, diff);
     //diff[0] /= this.zoomfactor * this.deepzoom.viewport[0] / 3.65;
     //diff[1] /= this.zoomfactor * this.deepzoom.viewport[1] / 3.65; // FIXME - why?
-    diff[0] /= this.zoomfactor * (this.deepzoom.size[0] / this.deepzoom.viewport[0]);
-    diff[1] /= this.zoomfactor * (this.deepzoom.size[1] / this.deepzoom.viewport[1]);
+    //diff[0] /= this.zoomfactor * (this.deepzoom.size[0] / this.deepzoom.viewport[0]);
+    //diff[1] /= this.zoomfactor * (this.deepzoom.size[1] / this.deepzoom.viewport[1]);
+    diff[0] = ((diff[0] / 1) / this.deepzoom.size[0]);
+    diff[1] = ((diff[1] / 1) / this.deepzoom.size[1]);
 
     // Clamp to [0..1]
     // FIXME - should actually allow for a half-tile border around the edges

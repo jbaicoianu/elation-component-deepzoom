@@ -3,6 +3,10 @@
 {dependency type="component" name="deepzoom.multizoom"}
 
 <div id="multizoom">
+ <ul class="deepzoom_help">
+  <li class="deepzoom_help_pan"></li>
+  <li class="deepzoom_help_zoom"></li>
+ </ul>
 </div>
 
 <script type="text/javascript">
