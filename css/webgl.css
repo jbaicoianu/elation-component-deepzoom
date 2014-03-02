@@ -1,0 +1,11 @@
+.deepzoom_viewer {
+  box-shadow: 0 0 10px black;
+  margin: 5em auto;
+  width: 1024px;
+  height: 1024px;
+  position: relative;
+  background: url(http://subtlepatterns.com/patterns/hexellence.png) repeat;
+}
+.deepzoom_viewer.debug {
+  overflow: visible;
+}
